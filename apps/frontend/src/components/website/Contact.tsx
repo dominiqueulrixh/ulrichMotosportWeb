@@ -25,7 +25,7 @@ export function Contact({ content }: ContactProps) {
   const cards = content.cards ?? [];
 
   return (
-    <section id="contact" className="py-24 bg-zinc-50 dark:bg-black relative overflow-hidden">
+    <section id="contact" className="py-24 bg-white dark:bg-zinc-900 relative overflow-hidden">
       <div className="absolute left-0 top-1/3 w-32 h-px bg-yellow-400 opacity-20"></div>
       <div className="absolute right-0 bottom-1/3 w-48 h-px bg-yellow-400 opacity-20"></div>
 
@@ -85,7 +85,7 @@ export function Contact({ content }: ContactProps) {
             );
 
             const classes =
-              'group bg-white dark:bg-zinc-900 p-8 rounded-2xl border-l-4 border-yellow-400 hover:border-l-8 hover:shadow-xl hover:scale-105 transition-all';
+              'group bg-zinc-50 dark:bg-zinc-800 p-8 rounded-2xl border-l-4 border-yellow-400 hover:border-l-8 hover:shadow-xl hover:scale-105 transition-all';
 
             return isLink ? (
               <a
