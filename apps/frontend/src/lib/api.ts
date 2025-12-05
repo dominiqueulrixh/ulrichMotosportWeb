@@ -49,11 +49,24 @@ const absoluteUrl = (maybeRelative: string): string => {
   return `${API_URL}${withLeadingSlash(maybeRelative)}`;
 };
 
-const mediaUrl = (value?: string | StrapiMedia | null): string | undefined => {
+type StrapiMediaWrapper = {
+  data?: { attributes?: StrapiMedia | null } | StrapiMedia | null;
+};
+
+const mediaUrl = (value?: string | StrapiMedia | StrapiMediaWrapper | null): string | undefined => {
   if (!value) return undefined;
   if (typeof value === 'string') return absoluteUrl(value);
 
-  const rawUrl = value.url ?? Object.values(value.formats ?? {}).find(Boolean)?.url;
+  const mediaCandidate = (value as StrapiMediaWrapper).data
+    ? (value as StrapiMediaWrapper).data?.attributes ?? (value as StrapiMediaWrapper).data
+    : value;
+
+  if (!mediaCandidate) return undefined;
+
+  const rawUrl =
+    (mediaCandidate as StrapiMedia).url ??
+    Object.values((mediaCandidate as StrapiMedia).formats ?? {}).find(Boolean)?.url;
+
   return rawUrl ? absoluteUrl(rawUrl) : undefined;
 };
 
@@ -74,6 +87,21 @@ const stripIdsDeep = <T>(value: T): T => {
   }
 
   return value;
+};
+
+const unwrapEntity = <T>(value: T | { attributes?: T }): T => {
+  if (value && typeof value === 'object' && 'attributes' in (value as Record<string, unknown>)) {
+    return (value as { attributes?: T }).attributes ?? (value as T);
+  }
+  return value as T;
+};
+
+const unwrapCollection = <T>(value?: Array<T> | { data?: Array<T> | null } | null): Array<T> => {
+  if (Array.isArray(value)) return value;
+  if (value && typeof value === 'object' && Array.isArray((value as { data?: Array<T> }).data)) {
+    return (value as { data?: Array<T> }).data ?? [];
+  }
+  return [];
 };
 
 const buildUrl = (path: string, params?: Record<string, string | number | undefined> | string) => {
@@ -238,11 +266,14 @@ const mapHero = (data: HeroApiResponse): HomepageContent['hero'] => {
 
 const mapServicesSection = (data: ServiceSectionApiResponse): HomepageContent['services'] => {
   const services: ServiceCard[] =
-    data.items?.map(service => ({
-      title: service?.title ?? '',
-      description: service?.description ?? '',
-      iconName: service?.iconName ?? 'Wrench'
-    })) ?? [];
+    unwrapCollection(data.items).map(rawService => {
+      const service = unwrapEntity(rawService) as ServiceCard;
+      return {
+        title: service?.title ?? '',
+        description: service?.description ?? '',
+        iconName: service?.iconName ?? 'Wrench'
+      };
+    });
 
   return {
     eyebrow: data.eyebrow ?? '',
@@ -254,12 +285,15 @@ const mapServicesSection = (data: ServiceSectionApiResponse): HomepageContent['s
 
 const mapServiceDetails = (data: ServiceSectionApiResponse): HomepageContent['serviceDetails'] => {
   const categories: ServiceCategory[] =
-    data.categories?.map(category => ({
-      title: category?.title ?? '',
-      description: category?.description ?? '',
-      imageUrl: mediaUrl(category?.image ?? category?.imageUrl),
-      items: normalizeTextList(category?.items)
-    })) ?? [];
+    unwrapCollection(data.categories).map(rawCategory => {
+      const category = unwrapEntity(rawCategory) as ServiceCategory & { image?: unknown; imageUrl?: unknown };
+      return {
+        title: category?.title ?? '',
+        description: category?.description ?? '',
+        imageUrl: mediaUrl(category?.image ?? category?.imageUrl),
+        items: normalizeTextList((category as { items?: TextListItem[] }).items)
+      };
+    });
 
   return {
     heading: data.detailsHeading ?? '',
@@ -284,14 +318,19 @@ const mapBrandSection = (data: BrandSectionApiResponse): HomepageContent['brands
 };
 
 const mapTeamSection = (data: TeamApiResponse): HomepageContent['team'] => {
-  const teamMembers: TeamMember[] =
-    data.members?.map(member => ({
-      name: member?.name ?? '',
-      role: member?.role ?? '',
-      experience: member?.experience ?? '',
-      specialization: member?.specialization ?? '',
-      imageUrl: mediaUrl(member?.photo ?? member?.image ?? member?.imageUrl)
-    })) ?? [];
+  const members = unwrapCollection(data.members).map(member => unwrapEntity(member));
+
+  const teamMembers: TeamMember[] = members.map(member => ({
+    name: (member as TeamMember)?.name ?? '',
+    role: (member as TeamMember)?.role ?? '',
+    experience: (member as TeamMember)?.experience ?? '',
+    specialization: (member as TeamMember)?.specialization ?? '',
+    imageUrl: mediaUrl(
+      (member as TeamMember & { photo?: unknown; image?: unknown; imageUrl?: unknown }).photo ??
+        (member as TeamMember & { image?: unknown }).image ??
+        (member as TeamMember & { imageUrl?: unknown }).imageUrl
+    )
+  }));
 
   return {
     eyebrow: data.eyebrow ?? '',

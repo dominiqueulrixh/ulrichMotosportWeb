@@ -106,7 +106,7 @@ export function Team({ content }: TeamProps) {
           {/* Diagonal background element */}
           <div className="absolute left-0 top-0 bottom-0 w-2 bg-yellow-400"></div>
 
-          <div className="bg-black dark:bg-white p-12 md:p-16 ml-8">
+          <div className="bg-zinc-50 dark:bg-zinc-800 p-12 md:p-16 ml-8">
             {/* Corner accents */}
             <div className="absolute top-0 right-0 w-8 h-8 bg-yellow-400"></div>
             <div className="absolute bottom-0 left-8 w-8 h-8 bg-yellow-400"></div>
@@ -116,17 +116,17 @@ export function Team({ content }: TeamProps) {
                 Seit 2001
               </div>
 
-              <h3 className="text-3xl md:text-4xl text-white dark:text-black mb-6">
+              <h3 className="text-3xl md:text-4xl text-black dark:text-white mb-6">
                 Über 20 Jahre Leidenschaft für Motorräder
               </h3>
 
               {content.story ? (
                 <div
-                  className="space-y-6 text-lg text-zinc-300 dark:text-zinc-700 leading-relaxed"
+                  className="space-y-6 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed"
                   dangerouslySetInnerHTML={{ __html: content.story }}
                 />
               ) : (
-                <div className="space-y-6 text-lg text-zinc-300 dark:text-zinc-700 leading-relaxed">
+                <div className="space-y-6 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
                   <p>
                     Was 2001 als kleine Werkstatt begann, ist heute eine etablierte Adresse für Motorradbegeisterte in der Region Rüti. Mit über 20 Jahren Erfahrung bieten wir professionellen Service für alle Motorradmarken.
                   </p>
