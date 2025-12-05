@@ -52,12 +52,7 @@ export function Hero({ onNavigate, content }: HeroProps) {
       <div className="max-w-7xl mx-auto px-4 pb-20 relative z-10 w-full">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Text Content - improved hierarchy and spacing */}
-          <div className="space-y-6 lg:space-y-8">
-            {content.eyebrow && (
-              <div className="inline-flex items-center gap-3 bg-white dark:bg-zinc-900 px-6 py-3">
-                <div className="w-2 h-2 bg-white dark:bg-zinc-900"></div>
-              </div>
-            )}
+          <div className="space-y-6 lg:space-y-8 lg:-mt-14">
             {/* Main heading - clear hierarchy */}
             <div className="space-y-4">
               <h1 className="text-5xl md:text-6xl lg:text-7xl text-black dark:text-white leading-[1.1]">
@@ -101,7 +96,7 @@ export function Hero({ onNavigate, content }: HeroProps) {
                 {content.stats.map((stat, index) => (
                   <div
                     key={`${stat.value}-${index}`}
-                    className="relative bg-black dark:bg-zinc-900 p-6 rounded-2xl overflow-hidden group hover:bg-yellow-400 dark:hover:bg-yellow-400 transition-all border-2 border-transparent hover:border-black dark:hover:border-black"
+                    className="relative bg-black dark:bg-zinc-900 p-6 rounded-2xl overflow-hidden group hover:bg-yellow-400 dark:hover:bg-yellow-400 transition-all border-2 border-transparent hover:border-black dark:hover:border-black flex flex-col items-center justify-center text-center"
                   >
                     <div className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity grid-fade" style={statCardFadeStyle}>
                       <div className="grid grid-cols-6 grid-rows-6 h-full">
@@ -111,11 +106,11 @@ export function Hero({ onNavigate, content }: HeroProps) {
                       </div>
                     </div>
                     <div className="absolute top-0 right-0 w-2 h-full bg-yellow-400 rounded-tr-2xl group-hover:bg-black"></div>
-                    <div className="relative space-y-2">
-                      <div className="text-3xl lg:text-4xl text-yellow-400 group-hover:text-black dark:group-hover:text-black transition-colors">
+                    <div className="relative space-y-2 px-2 sm:px-4">
+                      <div className="text-3xl lg:text-4xl text-yellow-400 group-hover:text-black dark:group-hover:text-black transition-colors leading-none">
                         {stat.value}
                       </div>
-                      <div className="text-xs text-white group-hover:text-black dark:group-hover:text-black leading-tight uppercase tracking-wider transition-colors whitespace-pre-line">
+                      <div className="text-xs text-white group-hover:text-black dark:group-hover:text-black leading-tight uppercase tracking-wider transition-colors whitespace-pre-line break-words">
                         {stat.label}
                       </div>
                     </div>
