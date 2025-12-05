@@ -80,9 +80,13 @@ export function Header({
       <nav className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="#home" className="flex items-center">
+          <button
+            type="button"
+            onClick={() => onTabChange('home')}
+            className="flex items-center"
+          >
             <img src={logoImage} alt="Ulrich Motosport" className="h-12 md:h-16 object-contain" />
-          </a>
+          </button>
 
           {/* Desktop Navigation - improved spacing and touch targets */}
           <div className="hidden md:flex items-center gap-6 lg:gap-8">

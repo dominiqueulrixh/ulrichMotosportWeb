@@ -45,18 +45,23 @@ export default function App() {
     email: contactEmail
   };
 
+  const handleTabChange = (tab: TabKey) => {
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const renderContent = () => {
     if (!homepage) return null;
     switch (activeTab) {
       case 'home':
-        return <Hero content={homepage.hero} onNavigate={setActiveTab} />;
+        return <Hero content={homepage.hero} onNavigate={handleTabChange} />;
       case 'services':
         return (
           <>
             <Services content={homepage.services} />
             <ServiceDetails
               content={homepage.serviceDetails}
-              onNavigateToContact={() => setActiveTab('contact')}
+              onNavigateToContact={() => handleTabChange('contact')}
             />
           </>
         );
@@ -69,11 +74,16 @@ export default function App() {
       case 'contact':
         return <Contact content={homepage.contact} />;
       case 'legal':
-        return <Legal isDarkMode={isDarkMode} onNavigateToContact={() => setActiveTab('contact')} />;
+        return <Legal isDarkMode={isDarkMode} onNavigateToContact={() => handleTabChange('contact')} />;
       default:
         return null;
     }
   };
+
+  useEffect(() => {
+    // Scroll to top whenever the main tab/section changes.
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeTab]);
 
   return (
     <div className={isDarkMode ? 'dark' : ''}>
@@ -82,7 +92,7 @@ export default function App() {
           isDarkMode={isDarkMode}
           setIsDarkMode={setIsDarkMode}
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={handleTabChange}
           contactPhone={contactPhone}
           contactEmail={contactEmail}
           tagline={homepage?.navigation.tagline}
@@ -98,7 +108,7 @@ export default function App() {
         </main>
         {homepage && (
           <Footer
-            onNavigate={setActiveTab}
+            onNavigate={handleTabChange}
             content={footerContent}
           />
         )}
