@@ -52,9 +52,6 @@ export function Services({ content }: ServicesProps) {
 
   return (
     <section id="services" className="py-16 bg-white dark:bg-zinc-900 relative overflow-hidden">
-      {/* Technical lines decoration */}
-      <div className="absolute right-0 top-1/3 w-64 h-px bg-yellow-400 opacity-20"></div>
-
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         <div className="text-center mb-12 space-y-4">
           {content.eyebrow && (
@@ -75,11 +72,13 @@ export function Services({ content }: ServicesProps) {
             </p>
           )}
         </div>
+      </div>
 
-        {/* Auto-scrolling Services */}
+      {/* Auto-scrolling Services - full-bleed */}
+      <div className="relative z-10 w-screen max-w-none left-1/2 -translate-x-1/2 transform px-0 overflow-hidden">
         <div 
           ref={scrollRef}
-          className="flex gap-6 overflow-x-hidden"
+          className="flex gap-6 overflow-x-hidden px-6 sm:px-10"
           style={{ scrollBehavior: 'auto' }}
         >
           {/* Duplicate services for seamless loop - improved visual hierarchy (Law of Common Region) */}
