@@ -15,10 +15,6 @@ export function Brands({ content }: BrandsProps) {
 
   return (
     <section id="brands" className="py-24 bg-zinc-50 dark:bg-zinc-900 relative overflow-hidden">
-      {/* Diagonal stripe background */}
-      <div className="absolute left-0 top-0 bottom-0 w-2 bg-yellow-400 opacity-20"></div>
-      <div className="absolute right-0 top-0 bottom-0 w-2 bg-yellow-400 opacity-20"></div>
-
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16 space-y-4">
