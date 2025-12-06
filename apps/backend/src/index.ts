@@ -165,7 +165,7 @@ const defaultContactData = {
 
 const defaultFooterData = {
   description:
-    'Ihr Motorrad-Spezialist in Rüti seit über 30 Jahren. Service, Reparatur und Occasionen für alle Marken.',
+    'Ihr Motorrad-Spezialist in Rüti seit über 20 Jahren. Service, Reparatur und Occasionen für alle Marken.',
   services: [
     { text: 'Motorrad Service' },
     { text: 'Reparaturen' },
