@@ -17,7 +17,12 @@ import { LoadingOverlay } from './components/website/LoadingOverlay';
 const validTabs: TabKey[] = ['home', 'services', 'brands', 'occasions', 'about', 'contact', 'legal'];
 
 export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    // Preserve theme for the session; default to dark if not set.
+    if (typeof window === 'undefined') return true;
+    const stored = sessionStorage.getItem('isDarkMode');
+    return stored ? stored === 'true' : true;
+  });
   const [activeTab, setActiveTab] = useState<TabKey>('home');
   const [homepage, setHomepage] = useState<HomepageContent | null>(null);
   const [loading, setLoading] = useState(true);
@@ -61,6 +66,12 @@ export default function App() {
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Persist theme choice for the duration of the session.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    sessionStorage.setItem('isDarkMode', String(isDarkMode));
+  }, [isDarkMode]);
 
   const renderContent = () => {
     if (!homepage) return null;
