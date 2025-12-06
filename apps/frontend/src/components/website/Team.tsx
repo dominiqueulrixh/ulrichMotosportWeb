@@ -57,15 +57,15 @@ export function Team({ content }: TeamProps) {
 
                 {/* Subtle checkered grid overlay - top right with fade (visible when not hovered) */}
                 <div 
-                  className="absolute top-0 right-0 w-32 h-32 opacity-30 group-hover:opacity-0 transition-opacity duration-500"
+                  className="absolute top-0 right-0 w-48 h-48 opacity-30 group-hover:opacity-0 transition-opacity duration-500"
                   style={{
                     maskImage: 'linear-gradient(to bottom left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 30%, transparent 70%)',
                     WebkitMaskImage: 'linear-gradient(to bottom left, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 30%, transparent 70%)'
                   }}
                 >
-                  <div className="grid grid-cols-8 grid-rows-8 h-full">
-                    {[...Array(64)].map((_, i) => (
-                      <div key={i} className={(i + Math.floor(i / 8)) % 2 === 0 ? 'bg-white' : 'bg-transparent'}></div>
+                  <div className="grid grid-cols-6 grid-rows-6 h-full">
+                    {[...Array(36)].map((_, i) => (
+                      <div key={i} className={(i + Math.floor(i / 6)) % 2 === 0 ? 'bg-white' : 'bg-transparent'}></div>
                     ))}
                   </div>
                 </div>
