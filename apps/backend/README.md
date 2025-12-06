@@ -21,7 +21,8 @@ Alle vordefinierten Inhalte sind entfernt. Lege die Sektionen als **Single Types
   - `primaryCtaTarget` (Text, Short)
   - `secondaryCtaLabel` (Text, Short)
   - `secondaryCtaTarget` (Text, Short)
-  - `image` (Media, Single)
+  - `image` (Media, Single, optional)
+  - `gallery` (Media, Multiple, optional) – mehrere Hero-Bilder fürs Karussell
 
 - **Service Section** (`service-section`)
   - `eyebrow` (Text, Short, optional)

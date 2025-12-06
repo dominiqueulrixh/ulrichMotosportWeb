@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "hero_stats",
+  "info": {
+    "singularName": "hero-stat",
+    "pluralName": "hero-stats",
+    "displayName": "hero-stat"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "value": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "order": {
+      "type": "integer"
+    }
+  }
+}

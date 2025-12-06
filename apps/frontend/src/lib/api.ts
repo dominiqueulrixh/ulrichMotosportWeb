@@ -292,6 +292,7 @@ type HeroApiResponse = {
   secondaryCtaLabel?: string | null;
   secondaryCtaTarget?: string | null;
   image?: MediaCollection;
+  gallery?: MediaCollection;
 };
 
 type HeroStatEntry = {
@@ -385,7 +386,8 @@ const mapNavigation = (data: NavigationApiResponse): HomepageContent['navigation
 });
 
 const mapHero = (data: HeroApiResponse, statsData: HeroStatEntry[]): HomepageContent['hero'] => {
-  const imageUrls = mediaUrls(data.image);
+  const galleryUrls = mediaUrls(data.gallery);
+  const imageUrls = galleryUrls.length > 0 ? galleryUrls : mediaUrls(data.image);
   const stats: HeroContent['stats'] =
     (statsData ?? []).map(stat => ({
       value: stat?.value ?? '',

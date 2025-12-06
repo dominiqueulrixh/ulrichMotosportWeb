@@ -54,6 +54,11 @@ export function Hero({ onNavigate, content }: HeroProps) {
   const [activeIndex, setActiveIndex] = React.useState(0);
   const slideCount = slides.length;
 
+  // Reset to first slide if slides change in length (e.g., after data load)
+  React.useEffect(() => {
+    setActiveIndex(0);
+  }, [slideCount]);
+
   React.useEffect(() => {
     if (activeIndex >= slideCount) {
       setActiveIndex(0);
@@ -64,7 +69,7 @@ export function Hero({ onNavigate, content }: HeroProps) {
     if (slideCount <= 1) return;
     const interval = window.setInterval(() => {
       setActiveIndex(prev => (prev + 1) % slideCount);
-    }, 5000);
+    }, 10000);
     return () => window.clearInterval(interval);
   }, [slideCount]);
 
@@ -168,14 +173,22 @@ export function Hero({ onNavigate, content }: HeroProps) {
             <div className="relative aspect-square max-w-sm mx-auto lg:max-w-[26rem] mb-16 lg:mb-0">
               {/* Main image container with rounded corners */}
               <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-800 rounded-[2rem] overflow-hidden">
-                {slides.map((src, index) => (
-                  <ImageWithFallback
-                    key={`${src}-${index}`}
-                    src={src}
-                    alt="Motorrad Service"
-                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${index === activeIndex ? 'opacity-100' : 'opacity-0'}`}
-                  />
-                ))}
+                {slides.map((src, index) => {
+                  const isActive = index === activeIndex;
+                  return (
+                    <ImageWithFallback
+                      key={`${src}-${index}`}
+                      src={src}
+                      alt="Motorrad Service"
+                      className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1800ms]"
+                      style={{
+                        opacity: isActive ? 1 : 0,
+                        visibility: isActive ? 'visible' : 'hidden',
+                        transitionTimingFunction: 'ease-in-out'
+                      }}
+                    />
+                  );
+                })}
 
                 {/* Simple yellow accent bar */}
                 <div className="absolute bottom-0 left-0 right-0 h-3 bg-yellow-400"></div>
@@ -183,22 +196,26 @@ export function Hero({ onNavigate, content }: HeroProps) {
                 {slideCount > 1 && (
                   <>
                     <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/15 via-transparent to-black/25" />
-                    <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center gap-3">
+                    <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center gap-5">
                       <button
                         type="button"
                         onClick={() => goTo(activeIndex - 1)}
-                        className="w-10 h-10 rounded-full bg-white/90 text-black shadow-md hover:bg-yellow-400 transition-colors pointer-events-auto"
+                        className="w-12 h-12 rounded-full bg-white/90 text-black text-2xl shadow-md hover:bg-yellow-400 transition-all pointer-events-auto"
                         aria-label="Vorheriges Bild"
                       >
                         ‹
                       </button>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-5">
                         {slides.map((_, idx) => (
                           <button
                             key={idx}
                             type="button"
                             onClick={() => goTo(idx)}
-                            className={`w-2.5 h-2.5 rounded-full border border-white/60 transition-all pointer-events-auto ${idx === activeIndex ? 'bg-yellow-400 border-yellow-400 scale-110' : 'bg-white/70'}`}
+                            className={`w-3 h-3 rounded-full border border-white/70 transition-all pointer-events-auto ${
+                              idx === activeIndex
+                                ? 'bg-yellow-400 border-yellow-400 scale-125'
+                                : 'bg-white/90'
+                            }`}
                             aria-label={`Bild ${idx + 1} anzeigen`}
                           />
                         ))}
@@ -206,7 +223,7 @@ export function Hero({ onNavigate, content }: HeroProps) {
                       <button
                         type="button"
                         onClick={() => goTo(activeIndex + 1)}
-                        className="w-10 h-10 rounded-full bg-white/90 text-black shadow-md hover:bg-yellow-400 transition-colors pointer-events-auto"
+                        className="w-12 h-12 rounded-full bg-white/90 text-black text-2xl shadow-md hover:bg-yellow-400 transition-all pointer-events-auto"
                         aria-label="Nächstes Bild"
                       >
                         ›

@@ -1,0 +1,30 @@
+{
+  "kind": "singleType",
+  "collectionName": "service_sections",
+  "info": {
+    "singularName": "service-section",
+    "pluralName": "service-sections",
+    "displayName": "service-section"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "eyebrow": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "subheading": {
+      "type": "text"
+    },
+    "detailsHeading": {
+      "type": "string"
+    },
+    "detailsSubheading": {
+      "type": "text"
+    }
+  }
+}

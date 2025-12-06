@@ -45,9 +45,11 @@ export function Services({ content }: ServicesProps) {
       }
     };
 
-    const intervalId = setInterval(scroll, 20);
+    const intervalId = window.setInterval(scroll, 20);
 
-    return () => clearInterval(intervalId);
+    return () => {
+      window.clearInterval(intervalId);
+    };
   }, [content.items]);
 
   return (
@@ -67,7 +69,7 @@ export function Services({ content }: ServicesProps) {
             {content.heading}
           </h2>
           {content.subheading && (
-            <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
+            <p className="text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
               {content.subheading}
             </p>
           )}

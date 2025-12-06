@@ -1,0 +1,58 @@
+{
+  "kind": "collectionType",
+  "collectionName": "contact_cards",
+  "info": {
+    "singularName": "contact-card",
+    "pluralName": "contact-cards",
+    "displayName": "contact-card"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "phone": {
+      "type": "enumeration",
+      "enum": [
+        "tel."
+      ]
+    },
+    "email": {
+      "type": "enumeration",
+      "enum": [
+        "info@ulrich-motosport.ch"
+      ]
+    },
+    "address": {
+      "type": "enumeration",
+      "enum": [
+        "Ulrich Motosport",
+        "Neuhofstrasse 1",
+        "CH-8630 Rüti"
+      ]
+    },
+    "hours": {
+      "type": "enumeration",
+      "enum": [
+        "Mo-Fr.",
+        "Sa.",
+        "So. geschlossen"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "linesText": {
+      "type": "text"
+    },
+    "actionValue": {
+      "type": "string"
+    },
+    "order": {
+      "type": "integer"
+    }
+  }
+}
