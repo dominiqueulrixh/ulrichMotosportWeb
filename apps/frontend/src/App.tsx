@@ -93,9 +93,6 @@ export default function App() {
           setIsDarkMode={setIsDarkMode}
           activeTab={activeTab}
           onTabChange={handleTabChange}
-          contactPhone={contactPhone}
-          contactEmail={contactEmail}
-          tagline={homepage?.navigation.tagline}
         />
         {loading && <LoadingOverlay />}
         <main className={`transition-all duration-300 ${loading ? 'opacity-0 blur-sm pointer-events-none select-none' : 'opacity-100'}`}>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, Sun, Moon, Phone, Mail } from 'lucide-react';
+import { Menu, X, Sun, Moon } from 'lucide-react';
 import logoLight from '../../assets/LogoUlrichMotosportLight.png';
 import logoDark from '../../assets/LogoUlrichMotosportDark.png';
 import { TabKey } from '../../types/navigation';
@@ -9,19 +9,13 @@ interface HeaderProps {
   setIsDarkMode: (value: boolean) => void;
   activeTab: TabKey;
   onTabChange: (tab: TabKey) => void;
-  contactPhone?: string;
-  contactEmail?: string;
-  tagline?: string;
 }
 
 export function Header({
   isDarkMode,
   setIsDarkMode,
   activeTab,
-  onTabChange,
-  contactPhone,
-  contactEmail,
-  tagline
+  onTabChange
 }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -36,58 +30,17 @@ export function Header({
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-zinc-950 backdrop-blur-sm border-b-4 border-yellow-400 transition-colors">
-      {/* Top bar with contact - improved touch targets (Fitts's Law) */}
-      <div className="bg-black dark:bg-zinc-950 text-white py-3">
-        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
-          <div className="flex gap-4 md:gap-6">
-            {contactPhone && (
-              <a
-                href={`tel:${contactPhone}`}
-                className="flex items-center gap-2 hover:text-yellow-400 transition-colors py-1 px-2 -mx-2 rounded hover:bg-zinc-900"
-              >
-                <Phone className="w-4 h-4" />
-                <span className="hidden sm:inline">{contactPhone}</span>
-              </a>
-            )}
-            {contactEmail && (
-              <a
-                href={`mailto:${contactEmail}`}
-                className="flex items-center gap-2 hover:text-yellow-400 transition-colors py-1 px-2 -mx-2 rounded hover:bg-zinc-900"
-              >
-                <Mail className="w-4 h-4" />
-                <span className="hidden sm:inline">{contactEmail}</span>
-              </a>
-            )}
-            {!contactPhone && !contactEmail && (
-              <>
-                <a href="tel:+41552201570" className="flex items-center gap-2 hover:text-yellow-400 transition-colors py-1 px-2 -mx-2 rounded hover:bg-zinc-900">
-                  <Phone className="w-4 h-4" />
-                  <span className="hidden sm:inline">055 220 15 70</span>
-                </a>
-                <a href="mailto:info@ulrich-motosport.ch" className="flex items-center gap-2 hover:text-yellow-400 transition-colors py-1 px-2 -mx-2 rounded hover:bg-zinc-900">
-                  <Mail className="w-4 h-4" />
-                  <span className="hidden sm:inline">info@ulrich-motosport.ch</span>
-                </a>
-              </>
-            )}
-          </div>
-          <div className="text-yellow-400 text-xs md:text-sm uppercase tracking-wider">
-            {tagline || '20+ Jahre Erfahrung'}
-          </div>
-        </div>
-      </div>
-
       {/* Main navigation */}
       <nav className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-24">
           {/* Logo */}
           <button
             type="button"
             onClick={() => onTabChange('home')}
             className="flex items-center"
           >
-            <img src={logoLight} alt="Ulrich Motosport" className="h-12 md:h-16 object-contain dark:hidden" />
-            <img src={logoDark} alt="Ulrich Motosport" className="h-12 md:h-16 object-contain hidden dark:block" />
+            <img src={logoLight} alt="Ulrich Motosport" className="h-16 md:h-20 object-contain dark:hidden" />
+            <img src={logoDark} alt="Ulrich Motosport" className="h-16 md:h-20 object-contain hidden dark:block" />
           </button>
 
           {/* Desktop Navigation - improved spacing and touch targets */}
