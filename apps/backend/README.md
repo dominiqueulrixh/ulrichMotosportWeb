@@ -1,19 +1,19 @@
-# Strapi Setup mit Collection Types (ohne Components/Seeds)
+# Strapi Setup: Sektionen als Single Types, Listen als Collection Types
 
-Alle vordefinierten Content-Types/Components und Seeds sind entfernt. Lege die folgenden **Collection Types** an (keine Components, nur Felder + Relationen/Listen als eigene Collections). Das Frontend (`apps/frontend`) lädt den jeweils neuesten Eintrag der Sektionen sowie alle Listen-Collections.
+Alle vordefinierten Inhalte sind entfernt. Lege die Sektionen als **Single Types** an und die Listen als **Collection Types**. Das Frontend (`apps/frontend`) ruft die Sektionen über Single-Type-Endpoints ab und die Listen über Collection-Endpoints.
 
 ## Starten
 - `npm install` und `npm run develop` (oder `yarn develop`) im Ordner `apps/backend`.
-- Unten aufgeführte Collection Types erstellen, Einträge anlegen und veröffentlichen.
-- Öffentliche Rolle: `find` und `findOne` für alle genannten Collection Types aktivieren.
+- Single Types und Collection Types wie unten anlegen, Inhalte veröffentlichen.
+- Öffentliche Rolle: `find` und `findOne` für alle genannten Types aktivieren.
 
-## Sektionen (jeweils 1 Eintrag anlegen & veröffentlichen)
-- **Navigation** (`navigations`)
+## Single Types (jeweils 1 Eintrag anlegen & veröffentlichen)
+- **Navigation** (`navigation`)
   - `phone` (Text, Short)
   - `email` (Email)
   - `tagline` (Text, Short)
 
-- **Hero** (`heroes`)
+- **Hero** (`hero`)
   - `eyebrow` (Text, Short, optional)
   - `title` (Text, Long)
   - `highlight` (Text, Short, optional)
@@ -23,25 +23,25 @@ Alle vordefinierten Content-Types/Components und Seeds sind entfernt. Lege die f
   - `secondaryCtaTarget` (Text, Short)
   - `image` (Media, Single)
 
-- **Service Section** (`service-sections`)
+- **Service Section** (`service-section`)
   - `eyebrow` (Text, Short, optional)
   - `heading` (Text, Short)
   - `subheading` (Text, Long, optional)
   - `detailsHeading` (Text, Short, optional)
   - `detailsSubheading` (Text, Long, optional)
 
-- **Brand Section** (`brand-sections`)
+- **Brand Section** (`brand-section`)
   - `eyebrow` (Text, Short, optional)
   - `heading` (Text, Short)
   - `subheading` (Text, Long, optional)
 
-- **Team Section** (`teams`)
+- **Team Section** (`team`)
   - `eyebrow` (Text, Short, optional)
   - `heading` (Text, Short)
   - `subheading` (Text, Long, optional)
   - `story` (Rich Text, optional)
 
-- **Contact Section** (`contacts`)
+- **Contact Section** (`contact`)
   - `eyebrow` (Text, Short, optional)
   - `heading` (Text, Short)
   - `subheading` (Text, Long, optional)
@@ -49,12 +49,12 @@ Alle vordefinierten Content-Types/Components und Seeds sind entfernt. Lege die f
   - `mapLabel` (Text, Short, optional)
   - `mapDescription` (Text, Short, optional)
 
-- **Footer** (`footers`)
+- **Footer** (`footer`)
   - `description` (Text, Long, optional)
   - `servicesText` (Text, Long, optional) – eine Zeile pro Service.
   - `legalText` (Text, Short, optional)
 
-## Listen-Collections (beliebig viele Einträge)
+## Collection Types (beliebig viele Einträge)
 - **Hero Stats** (`hero-stats`)
   - `value` (Text, Short)
   - `label` (Text, Short)
@@ -96,19 +96,10 @@ Alle vordefinierten Content-Types/Components und Seeds sind entfernt. Lege die f
   - `order` (Number, Integer, optional)
 
 ## Wie das Frontend die Daten nutzt
-- Es lädt pro Sektion den **neuesten Eintrag** (Sortierung `createdAt:desc`) aus `navigations`, `heroes`, `service-sections`, `brand-sections`, `teams`, `contacts`, `footers`.
-- Listen werden komplett geladen:
-  - Stats: `hero-stats` (sortiert nach `order`)
-  - Services: `services` (sortiert nach `order`)
-  - Service-Kategorien: `service-categories` (sortiert nach `order`)
-  - Brands: `brands` (sortiert nach `order`)
-  - Team-Mitglieder: `team-members` (sortiert nach `order`)
-  - Contact Cards: `contact-cards` (sortiert nach `order`)
+- Single Types: `navigation`, `hero`, `service-section`, `brand-section`, `team`, `contact`, `footer`.
+- Listen: `hero-stats`, `services`, `service-categories`, `brands`, `team-members`, `contact-cards` (sortiert nach `order`).
 - Text-Listen (`itemsText`, `linesText`, `servicesText`) werden zeilenweise getrennt und als Arrays ins UI gemappt.
 
 ## API-Berechtigungen
 - Settings → Users & Permissions → Roles → Public
-- Für alle oben genannten Collection Types: `find` und `findOne` aktivieren.
-
-## Hinweis
-- Wenn du mehrere Varianten einer Sektion brauchst, passt im Frontend `apps/frontend/src/lib/api.ts` die Abfrage an (z. B. Filter/Slug).
+- Für alle genannten Single und Collection Types: `find` und `findOne` aktivieren.

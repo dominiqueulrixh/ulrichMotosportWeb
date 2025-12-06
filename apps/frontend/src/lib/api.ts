@@ -186,6 +186,30 @@ const buildUrl = (path: string, params?: Record<string, string | number | undefi
   return url.toString();
 };
 
+export async function fetchSingleType<T>(
+  uid: string,
+  populate: string | undefined = '*',
+  options: FetchOptions = {}
+): Promise<T> {
+  const queryParams = populate ? { populate } : undefined;
+  const response = await fetch(buildUrl(`/api/${uid}`, queryParams), {
+    headers: { Accept: 'application/json' }
+  });
+
+  if (!response.ok) {
+    throw new Error(`Strapi request for ${uid} failed with status ${response.status}`);
+  }
+
+  const json: StrapiSingleResponse<T> = await response.json();
+  if (!json?.data) {
+    throw new Error(`Strapi response for ${uid} is missing data`);
+  }
+
+  const data = options.stripIds ? stripIdsDeep(json.data) : json.data;
+  const payload = (data as unknown as { attributes?: T }).attributes ?? data;
+  return payload as T;
+}
+
 export async function fetchFirstCollectionEntry<T>(
   collection: string,
   populate: string | undefined = '*',
@@ -515,19 +539,19 @@ export async function fetchHomepageContent(): Promise<HomepageContent> {
     contactCards,
     footer
   ] = await Promise.all([
-    fetchFirstCollectionEntry<NavigationApiResponse>('navigations', '*', { stripIds: true }),
-    fetchFirstCollectionEntry<HeroApiResponse>('heroes', '*', { stripIds: true }),
+    fetchSingleType<NavigationApiResponse>('navigation', '*', { stripIds: true }),
+    fetchSingleType<HeroApiResponse>('hero', '*', { stripIds: true }),
     fetchCollection<HeroStatEntry>('hero-stats', '*', { stripIds: true }, { sort: 'order:asc' }),
-    fetchFirstCollectionEntry<ServiceSectionMeta>('service-sections', '*', { stripIds: true }),
+    fetchSingleType<ServiceSectionMeta>('service-section', '*', { stripIds: true }),
     fetchCollection<ServiceCardEntry>('services', '*', { stripIds: true }, { sort: 'order:asc' }),
     fetchCollection<ServiceCategoryEntry>('service-categories', '*', { stripIds: true }, { sort: 'order:asc' }),
-    fetchFirstCollectionEntry<BrandSectionMeta>('brand-sections', '*', { stripIds: true }),
+    fetchSingleType<BrandSectionMeta>('brand-section', '*', { stripIds: true }),
     fetchCollection<BrandEntry>('brands', '*', { stripIds: true }, { sort: 'order:asc' }),
-    fetchFirstCollectionEntry<TeamSectionMeta>('teams', '*', { stripIds: true }),
+    fetchSingleType<TeamSectionMeta>('team', '*', { stripIds: true }),
     fetchCollection<TeamMemberEntry>('team-members', '*', { stripIds: true }, { sort: 'order:asc' }),
-    fetchFirstCollectionEntry<ContactSectionMeta>('contacts', '*', { stripIds: true }),
+    fetchSingleType<ContactSectionMeta>('contact', '*', { stripIds: true }),
     fetchCollection<ContactCardEntry>('contact-cards', '*', { stripIds: true }, { sort: 'order:asc' }),
-    fetchFirstCollectionEntry<FooterApiResponse>('footers', '*', { stripIds: true })
+    fetchSingleType<FooterApiResponse>('footer', '*', { stripIds: true })
   ]);
 
   return {
