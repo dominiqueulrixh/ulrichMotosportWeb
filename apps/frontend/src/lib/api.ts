@@ -14,10 +14,15 @@ type EntityIds = {
   documentId?: string;
 };
 
-type StrapiData<T> = T & EntityIds;
+type StrapiEntity<T> = (T & EntityIds) | (EntityIds & { attributes?: T | null });
+type StrapiData<T> = StrapiEntity<T>;
 
-export type StrapiResponse<T> = {
-  data: StrapiData<T>;
+export type StrapiSingleResponse<T> = {
+  data: StrapiEntity<T>;
+};
+
+export type StrapiCollectionResponse<T> = {
+  data?: Array<StrapiEntity<T>>;
 };
 
 type StrapiMedia = EntityIds & {
@@ -33,8 +38,6 @@ type MediaRelation =
     | { data?: MediaInput[] | null };   // multiple
 
 type MediaCollection = MediaInput | MediaInput[] | MediaRelation;
-
-type TextListItem = EntityIds & { text?: string | null };
 
 type FetchOptions = {
   stripIds?: boolean;
@@ -183,45 +186,80 @@ const buildUrl = (path: string, params?: Record<string, string | number | undefi
   return url.toString();
 };
 
-export async function fetchSingleType<T>(
-  uid: string,
+export async function fetchFirstCollectionEntry<T>(
+  collection: string,
   populate: string | undefined = '*',
   options: FetchOptions = {}
 ): Promise<T> {
-  const queryParams = populate ? { populate } : undefined;
-  const response = await fetch(buildUrl(`/api/${uid}`, queryParams), {
+  const queryParams = {
+    ...(populate ? { populate } : {}),
+    'pagination[page]': 1,
+    'pagination[pageSize]': 1,
+    sort: 'createdAt:desc'
+  };
+  const response = await fetch(buildUrl(`/api/${collection}`, queryParams), {
     headers: { Accept: 'application/json' }
   });
 
   if (!response.ok) {
-    throw new Error(`Strapi request for ${uid} failed with status ${response.status}`);
+    throw new Error(`Strapi request for ${collection} failed with status ${response.status}`);
   }
 
-  const json: StrapiResponse<T> = await response.json();
-  if (!json?.data) {
-    throw new Error(`Strapi response for ${uid} is missing data`);
+  const json: StrapiCollectionResponse<T> = await response.json();
+  const first = unwrapCollection(json?.data)[0];
+  if (!first) {
+    throw new Error(`Strapi response for ${collection} is empty`);
   }
 
-  const data = options.stripIds ? stripIdsDeep(json.data) : json.data;
+  const data = options.stripIds ? stripIdsDeep(first) : first;
 
-  // Prefer v5 shape (data contains the fields directly); keep v4 fallback just in case.
+  // Prefer v5 shape (entity under attributes); keep v4 fallback just in case.
   const payload = (data as unknown as { attributes?: T }).attributes ?? data;
   return payload as T;
 }
 
-const normalizeTextList = (items?: TextListItem[] | null): string[] =>
-  (items ?? [])
-    .map(item => item?.text ?? '')
+export async function fetchCollection<T>(
+  collection: string,
+  populate: string | undefined = '*',
+  options: FetchOptions = {},
+  extraParams: Record<string, string | number | undefined> = {}
+): Promise<Array<T>> {
+  const queryParams = {
+    ...(populate ? { populate } : {}),
+    'pagination[page]': 1,
+    'pagination[pageSize]': 200,
+    ...extraParams
+  };
+  const response = await fetch(buildUrl(`/api/${collection}`, queryParams), {
+    headers: { Accept: 'application/json' }
+  });
+
+  if (!response.ok) {
+    throw new Error(`Strapi request for ${collection} failed with status ${response.status}`);
+  }
+
+  const json: StrapiCollectionResponse<T> = await response.json();
+  const items = unwrapCollection(json?.data).map(entry => {
+    const data = options.stripIds ? stripIdsDeep(entry) : entry;
+    return ((data as unknown as { attributes?: T }).attributes ?? data) as T;
+  });
+
+  return items;
+}
+
+const splitLines = (value?: string | null): string[] =>
+  (value ?? '')
+    .split(/\r?\n/)
     .map(entry => entry.trim())
     .filter(Boolean);
 
-type NavigationApiResponse = StrapiData<{
+type NavigationApiResponse = {
   phone?: string | null;
   email?: string | null;
   tagline?: string | null;
-}>;
+};
 
-type HeroApiResponse = StrapiData<{
+type HeroApiResponse = {
   eyebrow?: string | null;
   title?: string | null;
   highlight?: string | null;
@@ -230,70 +268,91 @@ type HeroApiResponse = StrapiData<{
   secondaryCtaLabel?: string | null;
   secondaryCtaTarget?: string | null;
   image?: MediaCollection;
-  stats?: Array<StrapiData<Partial<HeroContent['stats'][number]>>>;
-}>;
+};
 
-type ServiceSectionApiResponse = StrapiData<{
+type HeroStatEntry = {
+  value?: string | null;
+  label?: string | null;
+  description?: string | null;
+  order?: number | null;
+};
+
+type ServiceSectionMeta = {
   eyebrow?: string | null;
   heading?: string | null;
   subheading?: string | null;
-  items?: Array<StrapiData<Partial<ServiceCard>>>;
   detailsHeading?: string | null;
   detailsSubheading?: string | null;
-  categories?: Array<
-    StrapiData<
-      Partial<ServiceCategory> & {
-        image?: string | StrapiMedia | null;
-        items?: TextListItem[] | null;
-      }
-    >
-  >;
-}>;
+};
 
-type BrandSectionApiResponse = StrapiData<{
+type ServiceCardEntry = {
+  title?: string | null;
+  description?: string | null;
+  iconName?: string | null;
+  order?: number | null;
+};
+
+type ServiceCategoryEntry = {
+  title?: string | null;
+  description?: string | null;
+  image?: MediaCollection;
+  itemsText?: string | null;
+  order?: number | null;
+};
+
+type BrandSectionMeta = {
   eyebrow?: string | null;
   heading?: string | null;
   subheading?: string | null;
-  items?: Array<StrapiData<Partial<BrandCard>>>;
-}>;
+};
 
-type TeamApiResponse = StrapiData<{
+type BrandEntry = {
+  name?: string | null;
+  description?: string | null;
+  order?: number | null;
+};
+
+type TeamSectionMeta = {
   eyebrow?: string | null;
   heading?: string | null;
   subheading?: string | null;
-  members?: Array<
-    StrapiData<
-      Partial<TeamMember> & {
-        photo?: string | StrapiMedia | null;
-        image?: string | StrapiMedia | null;
-        imageUrl?: string | StrapiMedia | null;
-      }
-    >
-  >;
   story?: string | null;
-}>;
+};
 
-type ContactApiResponse = StrapiData<{
+type TeamMemberEntry = {
+  name?: string | null;
+  role?: string | null;
+  experience?: string | null;
+  specialization?: string | null;
+  photo?: MediaCollection;
+  image?: MediaCollection;
+  imageUrl?: MediaCollection;
+  order?: number | null;
+};
+
+type ContactSectionMeta = {
   eyebrow?: string | null;
   heading?: string | null;
   subheading?: string | null;
-  cards?: Array<
-    StrapiData<
-      Partial<ContactCard> & {
-        lines?: TextListItem[] | null;
-      }
-    >
-  >;
   mapEmbedUrl?: string | null;
   mapLabel?: string | null;
   mapDescription?: string | null;
-}>;
+};
 
-type FooterApiResponse = StrapiData<{
+type ContactCardEntry = {
+  type?: ContactCard['type'] | null;
+  title?: string | null;
   description?: string | null;
-  services?: TextListItem[] | null;
+  linesText?: string | null;
+  actionValue?: string | null;
+  order?: number | null;
+};
+
+type FooterApiResponse = {
+  description?: string | null;
+  servicesText?: string | null;
   legalText?: string | null;
-}>;
+};
 
 const mapNavigation = (data: NavigationApiResponse): HomepageContent['navigation'] => ({
   phone: data.phone ?? '',
@@ -301,14 +360,14 @@ const mapNavigation = (data: NavigationApiResponse): HomepageContent['navigation
   tagline: data.tagline ?? ''
 });
 
-const mapHero = (data: HeroApiResponse): HomepageContent['hero'] => {
+const mapHero = (data: HeroApiResponse, statsData: HeroStatEntry[]): HomepageContent['hero'] => {
   const imageUrls = mediaUrls(data.image);
   const stats: HeroContent['stats'] =
-    data.stats?.map(stat => ({
+    (statsData ?? []).map(stat => ({
       value: stat?.value ?? '',
       label: stat?.label ?? '',
       description: stat?.description ?? ''
-    })) ?? [];
+    }));
 
   return {
     eyebrow: data.eyebrow ?? '',
@@ -328,108 +387,114 @@ const mapHero = (data: HeroApiResponse): HomepageContent['hero'] => {
   };
 };
 
-const mapServicesSection = (data: ServiceSectionApiResponse): HomepageContent['services'] => {
-  const services: ServiceCard[] =
-    unwrapCollection(data.items).map(rawService => {
-      const service = unwrapEntity(rawService) as ServiceCard;
-      return {
-        title: service?.title ?? '',
-        description: service?.description ?? '',
-        iconName: service?.iconName ?? 'Wrench'
-      };
-    });
+const mapServicesSection = (
+  meta: ServiceSectionMeta,
+  serviceCards: ServiceCardEntry[]
+): HomepageContent['services'] => {
+  const services: ServiceCard[] = (serviceCards ?? [])
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .map(service => ({
+      title: service?.title ?? '',
+      description: service?.description ?? '',
+      iconName: service?.iconName ?? 'Wrench'
+    }));
 
   return {
-    eyebrow: data.eyebrow ?? '',
-    heading: data.heading ?? '',
-    subheading: data.subheading ?? '',
+    eyebrow: meta.eyebrow ?? '',
+    heading: meta.heading ?? '',
+    subheading: meta.subheading ?? '',
     items: services
   };
 };
 
-const mapServiceDetails = (data: ServiceSectionApiResponse): HomepageContent['serviceDetails'] => {
-  const categories: ServiceCategory[] =
-    unwrapCollection(data.categories).map(rawCategory => {
-      const category = unwrapEntity(rawCategory) as ServiceCategory & { image?: unknown; imageUrl?: unknown };
-      return {
-        title: category?.title ?? '',
-        description: category?.description ?? '',
-        imageUrl: mediaUrl(category?.image ?? category?.imageUrl),
-        items: normalizeTextList((category as { items?: TextListItem[] }).items)
-      };
-    });
+const mapServiceDetails = (
+  meta: ServiceSectionMeta,
+  categoriesData: ServiceCategoryEntry[]
+): HomepageContent['serviceDetails'] => {
+  const categories: ServiceCategory[] = (categoriesData ?? [])
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .map(category => ({
+      title: category?.title ?? '',
+      description: category?.description ?? '',
+      imageUrl: mediaUrl(category?.image),
+      items: splitLines(category?.itemsText)
+    }));
 
   return {
-    heading: data.detailsHeading ?? '',
-    subheading: data.detailsSubheading ?? '',
+    heading: meta.detailsHeading ?? '',
+    subheading: meta.detailsSubheading ?? '',
     categories
   };
 };
 
-const mapBrandSection = (data: BrandSectionApiResponse): HomepageContent['brands'] => {
-  const brands: BrandCard[] =
-    data.items?.map(brand => ({
+const mapBrandSection = (
+  meta: BrandSectionMeta,
+  brandsData: BrandEntry[]
+): HomepageContent['brands'] => {
+  const brands: BrandCard[] = (brandsData ?? [])
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .map(brand => ({
       name: brand?.name ?? '',
       description: brand?.description ?? ''
-    })) ?? [];
+    }));
 
   return {
-    eyebrow: data.eyebrow ?? '',
-    heading: data.heading ?? '',
-    subheading: data.subheading ?? '',
+    eyebrow: meta.eyebrow ?? '',
+    heading: meta.heading ?? '',
+    subheading: meta.subheading ?? '',
     items: brands
   };
 };
 
-const mapTeamSection = (data: TeamApiResponse): HomepageContent['team'] => {
-  const members = unwrapCollection(data.members).map(member => unwrapEntity(member));
-
-  const teamMembers: TeamMember[] = members.map(member => ({
-    name: (member as TeamMember)?.name ?? '',
-    role: (member as TeamMember)?.role ?? '',
-    experience: (member as TeamMember)?.experience ?? '',
-    specialization: (member as TeamMember)?.specialization ?? '',
-    imageUrl: mediaUrl(
-      (member as TeamMember & { photo?: unknown; image?: unknown; imageUrl?: unknown }).photo ??
-        (member as TeamMember & { image?: unknown }).image ??
-        (member as TeamMember & { imageUrl?: unknown }).imageUrl
-    )
-  }));
+const mapTeamSection = (meta: TeamSectionMeta, membersData: TeamMemberEntry[]): HomepageContent['team'] => {
+  const teamMembers: TeamMember[] = (membersData ?? [])
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .map(member => ({
+      name: member?.name ?? '',
+      role: member?.role ?? '',
+      experience: member?.experience ?? '',
+      specialization: member?.specialization ?? '',
+      imageUrl: mediaUrl(member?.photo ?? member?.image ?? member?.imageUrl)
+    }));
 
   return {
-    eyebrow: data.eyebrow ?? '',
-    heading: data.heading ?? '',
-    subheading: data.subheading ?? '',
+    eyebrow: meta.eyebrow ?? '',
+    heading: meta.heading ?? '',
+    subheading: meta.subheading ?? '',
     members: teamMembers,
-    story: data.story ?? ''
+    story: meta.story ?? ''
   };
 };
 
-const mapContactSection = (data: ContactApiResponse): HomepageContent['contact'] => {
-  const contactCards: ContactCard[] =
-    data.cards?.map(card => ({
-      type: card?.type ?? 'phone',
+const mapContactSection = (
+  meta: ContactSectionMeta,
+  cardsData: ContactCardEntry[]
+): HomepageContent['contact'] => {
+  const contactCards: ContactCard[] = (cardsData ?? [])
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .map(card => ({
+      type: (card?.type as ContactCard['type']) ?? 'phone',
       title: card?.title ?? '',
       description: card?.description ?? '',
-      lines: normalizeTextList(card?.lines),
+      lines: splitLines(card?.linesText),
       actionValue: card?.actionValue ?? ''
-    })) ?? [];
+    }));
 
   return {
-    eyebrow: data.eyebrow ?? '',
-    heading: data.heading ?? '',
-    subheading: data.subheading ?? '',
+    eyebrow: meta.eyebrow ?? '',
+    heading: meta.heading ?? '',
+    subheading: meta.subheading ?? '',
     cards: contactCards,
-    mapEmbedUrl: data.mapEmbedUrl ?? '',
-    mapLabel: data.mapLabel ?? '',
-    mapDescription: data.mapDescription ?? ''
+    mapEmbedUrl: meta.mapEmbedUrl ?? '',
+    mapLabel: meta.mapLabel ?? '',
+    mapDescription: meta.mapDescription ?? ''
   };
 };
 
 const mapFooter = (data: FooterApiResponse): HomepageContent['footer'] => {
   return {
     description: data.description ?? '',
-    services: normalizeTextList(data.services),
+    services: splitLines(data.servicesText),
     legalText: data.legalText ?? ''
   };
 };
@@ -438,29 +503,41 @@ export async function fetchHomepageContent(): Promise<HomepageContent> {
   const [
     navigation,
     hero,
-    services,
-    brands,
-    team,
-    contact,
+    heroStats,
+    serviceMeta,
+    serviceCards,
+    serviceCategories,
+    brandMeta,
+    brandItems,
+    teamMeta,
+    teamMembers,
+    contactMeta,
+    contactCards,
     footer
   ] = await Promise.all([
-    fetchSingleType<NavigationApiResponse>('navigation', '*', { stripIds: true }),
-    fetchSingleType<HeroApiResponse>('hero', '*', { stripIds: true }),
-    fetchSingleType<ServiceSectionApiResponse>('service-section', '*', { stripIds: true }),
-    fetchSingleType<BrandSectionApiResponse>('brand-section', '*', { stripIds: true }),
-    fetchSingleType<TeamApiResponse>('team', '*', { stripIds: true }),
-    fetchSingleType<ContactApiResponse>('contact', '*', { stripIds: true }),
-    fetchSingleType<FooterApiResponse>('footer', '*', { stripIds: true })
+    fetchFirstCollectionEntry<NavigationApiResponse>('navigations', '*', { stripIds: true }),
+    fetchFirstCollectionEntry<HeroApiResponse>('heroes', '*', { stripIds: true }),
+    fetchCollection<HeroStatEntry>('hero-stats', '*', { stripIds: true }, { sort: 'order:asc' }),
+    fetchFirstCollectionEntry<ServiceSectionMeta>('service-sections', '*', { stripIds: true }),
+    fetchCollection<ServiceCardEntry>('services', '*', { stripIds: true }, { sort: 'order:asc' }),
+    fetchCollection<ServiceCategoryEntry>('service-categories', '*', { stripIds: true }, { sort: 'order:asc' }),
+    fetchFirstCollectionEntry<BrandSectionMeta>('brand-sections', '*', { stripIds: true }),
+    fetchCollection<BrandEntry>('brands', '*', { stripIds: true }, { sort: 'order:asc' }),
+    fetchFirstCollectionEntry<TeamSectionMeta>('teams', '*', { stripIds: true }),
+    fetchCollection<TeamMemberEntry>('team-members', '*', { stripIds: true }, { sort: 'order:asc' }),
+    fetchFirstCollectionEntry<ContactSectionMeta>('contacts', '*', { stripIds: true }),
+    fetchCollection<ContactCardEntry>('contact-cards', '*', { stripIds: true }, { sort: 'order:asc' }),
+    fetchFirstCollectionEntry<FooterApiResponse>('footers', '*', { stripIds: true })
   ]);
 
   return {
     navigation: mapNavigation(navigation),
-    hero: mapHero(hero),
-    services: mapServicesSection(services),
-    serviceDetails: mapServiceDetails(services),
-    brands: mapBrandSection(brands),
-    team: mapTeamSection(team),
-    contact: mapContactSection(contact),
+    hero: mapHero(hero, heroStats),
+    services: mapServicesSection(serviceMeta, serviceCards),
+    serviceDetails: mapServiceDetails(serviceMeta, serviceCategories),
+    brands: mapBrandSection(brandMeta, brandItems),
+    team: mapTeamSection(teamMeta, teamMembers),
+    contact: mapContactSection(contactMeta, contactCards),
     footer: mapFooter(footer)
   };
 }

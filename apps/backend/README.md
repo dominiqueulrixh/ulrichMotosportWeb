@@ -1,112 +1,114 @@
-# Strapi Setup ohne Vorbelegung
+# Strapi Setup mit Collection Types (ohne Components/Seeds)
 
-Alle vordefinierten Collection Types, Components und Seed-Daten wurden entfernt. Lege die benötigten Single Types und Components in Strapi manuell an, damit das Frontend (`apps/frontend`) die erwarteten Felder findet.
+Alle vordefinierten Content-Types/Components und Seeds sind entfernt. Lege die folgenden **Collection Types** an (keine Components, nur Felder + Relationen/Listen als eigene Collections). Das Frontend (`apps/frontend`) lädt den jeweils neuesten Eintrag der Sektionen sowie alle Listen-Collections.
 
 ## Starten
 - `npm install` und `npm run develop` (oder `yarn develop`) im Ordner `apps/backend`.
-- Melde dich im Strapi-Admin an und erstelle die unten beschriebenen Strukturen.
-- Vergiss nicht, die Einträge zu veröffentlichen, damit das Frontend sie abrufen kann.
+- Unten aufgeführte Collection Types erstellen, Einträge anlegen und veröffentlichen.
+- Öffentliche Rolle: `find` und `findOne` für alle genannten Collection Types aktivieren.
 
-## Components anlegen
-Erstelle die Components zuerst, damit du sie in den Single Types wiederverwenden kannst.
+## Sektionen (jeweils 1 Eintrag anlegen & veröffentlichen)
+- **Navigation** (`navigations`)
+  - `phone` (Text, Short)
+  - `email` (Email)
+  - `tagline` (Text, Short)
 
-- `common.list-item`  
-  - `text` (Text, required): Eine Zeile, z. B. für Services oder Adresszeilen.
+- **Hero** (`heroes`)
+  - `eyebrow` (Text, Short, optional)
+  - `title` (Text, Long)
+  - `highlight` (Text, Short, optional)
+  - `primaryCtaLabel` (Text, Short)
+  - `primaryCtaTarget` (Text, Short)
+  - `secondaryCtaLabel` (Text, Short)
+  - `secondaryCtaTarget` (Text, Short)
+  - `image` (Media, Single)
 
-- `homepage.hero-stat`  
-  - `value` (String, required): Anzeigezahl, z. B. `20+`.  
-  - `label` (String, required): Kurze Beschreibung.  
-  - `description` (Text, optional).
+- **Service Section** (`service-sections`)
+  - `eyebrow` (Text, Short, optional)
+  - `heading` (Text, Short)
+  - `subheading` (Text, Long, optional)
+  - `detailsHeading` (Text, Short, optional)
+  - `detailsSubheading` (Text, Long, optional)
 
-- `homepage.service-card`  
-  - `title` (String, required).  
-  - `description` (Text, optional).  
-  - `iconName` (String, optional): Name des Icons im Frontend (z. B. `Wrench`).
+- **Brand Section** (`brand-sections`)
+  - `eyebrow` (Text, Short, optional)
+  - `heading` (Text, Short)
+  - `subheading` (Text, Long, optional)
 
-- `homepage.service-category`  
-  - `title` (String, required).  
-  - `description` (Text, optional).  
-  - `image` (Single Media, optional).  
-  - `items` (Repeatable Component: `common.list-item`, optional).
+- **Team Section** (`teams`)
+  - `eyebrow` (Text, Short, optional)
+  - `heading` (Text, Short)
+  - `subheading` (Text, Long, optional)
+  - `story` (Rich Text, optional)
 
-- `homepage.brand-card`  
-  - `name` (String, required).  
-  - `description` (Text, optional).
+- **Contact Section** (`contacts`)
+  - `eyebrow` (Text, Short, optional)
+  - `heading` (Text, Short)
+  - `subheading` (Text, Long, optional)
+  - `mapEmbedUrl` (Text, Long, optional)
+  - `mapLabel` (Text, Short, optional)
+  - `mapDescription` (Text, Short, optional)
 
-- `homepage.team-member`  
-  - `name` (String, required).  
-  - `role` (String, optional).  
-  - `experience` (String, optional).  
-  - `specialization` (String, optional).  
-  - `photo` (Single Media, optional).
+- **Footer** (`footers`)
+  - `description` (Text, Long, optional)
+  - `servicesText` (Text, Long, optional) – eine Zeile pro Service.
+  - `legalText` (Text, Short, optional)
 
-- `homepage.contact-card`  
-  - `type` (Enumeration: `phone`, `email`, `address`, `hours`, required).  
-  - `title` (String, required).  
-  - `description` (Text, optional).  
-  - `lines` (Repeatable Component: `common.list-item`, optional) – z. B. Adresse oder Öffnungszeiten.  
-  - `actionValue` (String, optional) – z. B. `tel:` oder `mailto:` Ziel.
+## Listen-Collections (beliebig viele Einträge)
+- **Hero Stats** (`hero-stats`)
+  - `value` (Text, Short)
+  - `label` (Text, Short)
+  - `description` (Text, Long, optional)
+  - `order` (Number, Integer, optional)
 
-- Optional: `homepage.social-link`  
-  - `platform` (String, required).  
-  - `url` (String, required).  
-  Wird aktuell im Frontend nicht genutzt, kann aber für spätere Erweiterungen hilfreich sein.
+- **Services** (`services`)
+  - `title` (Text, Short)
+  - `description` (Text, Long, optional)
+  - `iconName` (Text, Short, optional) – Icon-Name aus dem Frontend (z. B. `Wrench`).
+  - `order` (Number, Integer, optional)
 
-## Single Types erstellen
-Lege folgende Single Types an (UIDs in Klammern), damit die API-Routen aus dem Frontend funktionieren.
+- **Service Categories** (`service-categories`)
+  - `title` (Text, Short)
+  - `description` (Text, Long, optional)
+  - `image` (Media, Single, optional)
+  - `itemsText` (Text, Long, optional) – eine Zeile pro Bullet.
+  - `order` (Number, Integer, optional)
 
-- Navigation (`navigation`)  
-  - `phone` (String).  
-  - `email` (String).  
-  - `tagline` (String).
+- **Brands** (`brands`)
+  - `name` (Text, Short)
+  - `description` (Text, Long, optional)
+  - `order` (Number, Integer, optional)
 
-- Hero (`hero`)  
-  - `eyebrow` (String, optional).  
-  - `title` (Text, required).  
-  - `highlight` (String, optional).  
-  - `primaryCtaLabel` (String).  
-  - `primaryCtaTarget` (String) – Anker oder Route.  
-  - `secondaryCtaLabel` (String).  
-  - `secondaryCtaTarget` (String).  
-  - `image` (Single Media, optional).  
-  - `stats` (Repeatable Component: `homepage.hero-stat`, optional).  
-  - Optional: zusätzliches Feld `images` (Multiple Media) falls du mehrere Bilder liefern willst.
+- **Team Members** (`team-members`)
+  - `name` (Text, Short)
+  - `role` (Text, Short, optional)
+  - `experience` (Text, Short, optional)
+  - `specialization` (Text, Short, optional)
+  - `photo` (Media, Single, optional)
+  - `order` (Number, Integer, optional)
 
-- Services (`service-section`)  
-  - `eyebrow` (String, optional).  
-  - `heading` (String, required).  
-  - `subheading` (Text, optional).  
-  - `items` (Repeatable Component: `homepage.service-card`, optional).  
-  - `detailsHeading` (String, optional).  
-  - `detailsSubheading` (Text, optional).  
-  - `categories` (Repeatable Component: `homepage.service-category`, optional).
+- **Contact Cards** (`contact-cards`)
+  - `type` (Enumeration: `phone`, `email`, `address`, `hours`)
+  - `title` (Text, Short)
+  - `description` (Text, Long, optional)
+  - `linesText` (Text, Long, optional) – eine Zeile pro Adresse/Öffnungszeit.
+  - `actionValue` (Text, Short, optional) – z. B. `+4155...`, `info@...`.
+  - `order` (Number, Integer, optional)
 
-- Marken (`brand-section`)  
-  - `eyebrow` (String, optional).  
-  - `heading` (String, required).  
-  - `subheading` (Text, optional).  
-  - `items` (Repeatable Component: `homepage.brand-card`, optional).
+## Wie das Frontend die Daten nutzt
+- Es lädt pro Sektion den **neuesten Eintrag** (Sortierung `createdAt:desc`) aus `navigations`, `heroes`, `service-sections`, `brand-sections`, `teams`, `contacts`, `footers`.
+- Listen werden komplett geladen:
+  - Stats: `hero-stats` (sortiert nach `order`)
+  - Services: `services` (sortiert nach `order`)
+  - Service-Kategorien: `service-categories` (sortiert nach `order`)
+  - Brands: `brands` (sortiert nach `order`)
+  - Team-Mitglieder: `team-members` (sortiert nach `order`)
+  - Contact Cards: `contact-cards` (sortiert nach `order`)
+- Text-Listen (`itemsText`, `linesText`, `servicesText`) werden zeilenweise getrennt und als Arrays ins UI gemappt.
 
-- Team (`team`)  
-  - `eyebrow` (String, optional).  
-  - `heading` (String, required).  
-  - `subheading` (Text, optional).  
-  - `members` (Repeatable Component: `homepage.team-member`, optional).  
-  - `story` (Rich Text, optional).
+## API-Berechtigungen
+- Settings → Users & Permissions → Roles → Public
+- Für alle oben genannten Collection Types: `find` und `findOne` aktivieren.
 
-- Kontakt (`contact`)  
-  - `eyebrow` (String, optional).  
-  - `heading` (String, required).  
-  - `subheading` (Text, optional).  
-  - `cards` (Repeatable Component: `homepage.contact-card`, optional).  
-  - `mapEmbedUrl` (String, optional).  
-  - `mapLabel` (String, optional).  
-  - `mapDescription` (String, optional).
-
-- Footer (`footer`)  
-  - `description` (Text, optional).  
-  - `services` (Repeatable Component: `common.list-item`, optional).  
-  - `legalText` (String, optional).  
-  - Optional: `socials` (Repeatable Component: `homepage.social-link`) falls benötigt.
-
-> Hinweis: Alle oben genannten Inhalte sind Single Types. Du kannst sie später in Collection Types aufteilen, falls du mehrere Seiten mit ähnlicher Struktur brauchst – achte dann auf die UIDs und die Feldnamen, die das Frontend erwartet.
+## Hinweis
+- Wenn du mehrere Varianten einer Sektion brauchst, passt im Frontend `apps/frontend/src/lib/api.ts` die Abfrage an (z. B. Filter/Slug).
