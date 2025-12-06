@@ -179,15 +179,6 @@ export function Hero({ onNavigate, content }: HeroProps) {
 
                 {/* Simple yellow accent bar */}
                 <div className="absolute bottom-0 left-0 right-0 h-3 bg-yellow-400"></div>
-                
-                {/* Minimal checkered corner accent */}
-                <div className="absolute top-0 right-0 w-20 h-20 opacity-30 rounded-tr-[2rem] overflow-hidden grid-fade" style={cornerGridFadeStyle}>
-                  <div className="grid grid-cols-5 grid-rows-5 h-full">
-                    {[...Array(25)].map((_, i) => (
-                      <div key={i} className={(i + Math.floor(i / 5)) % 2 === 0 ? 'bg-white' : 'bg-transparent'}></div>
-                    ))}
-                  </div>
-                </div>
 
                 {slideCount > 1 && (
                   <>
