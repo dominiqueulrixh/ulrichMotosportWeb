@@ -1,5 +1,13 @@
 import React from 'react';
-import logoImage from 'figma:asset/LogoColored.png';
+import logoLight from '../assets/LogoUlrichMotosportLight.png';
+import logoDark from '../assets/LogoUlrichMotosportDark.png';
+
+const Logo = ({ className = '' }: { className?: string }) => (
+  <>
+    <img src={logoLight} alt="Ulrich Motosport" className={`dark:hidden ${className}`} />
+    <img src={logoDark} alt="Ulrich Motosport" className={`hidden dark:block ${className}`} />
+  </>
+);
 
 export function Letterhead() {
   return (
@@ -18,7 +26,7 @@ export function Letterhead() {
           <div className="max-w-2xl mx-auto bg-white p-8 rounded shadow-2xl">
             {/* Header */}
             <div className="flex justify-between items-start mb-12 pb-4 border-b-2 border-yellow-400">
-              <img src={logoImage} alt="Ulrich Motosport" className="h-12 object-contain" />
+              <Logo className="h-12 object-contain" />
               <div className="text-right text-xs text-zinc-600">
                 <p>Werkstattstrasse XX</p>
                 <p>XXXX Ort</p>
@@ -84,13 +92,13 @@ export function Letterhead() {
       <div>
         <h3 className="text-white mb-4">Rechnungsvorlage</h3>
         <div className="bg-zinc-800 p-8 rounded-lg">
-          <div className="max-w-2xl mx-auto bg-white p-8 rounded shadow-2xl">
-            {/* Header */}
-            <div className="flex justify-between items-start mb-8">
-              <img src={logoImage} alt="Ulrich Motosport" className="h-12 object-contain" />
-              <div className="text-right">
-                <p className="text-2xl text-black mb-2">RECHNUNG</p>
-                <p className="text-sm text-zinc-600">Nr. 2024-001</p>
+            <div className="max-w-2xl mx-auto bg-white p-8 rounded shadow-2xl">
+              {/* Header */}
+              <div className="flex justify-between items-start mb-8">
+                <Logo className="h-12 object-contain" />
+                <div className="text-right">
+                  <p className="text-2xl text-black mb-2">RECHNUNG</p>
+                  <p className="text-sm text-zinc-600">Nr. 2024-001</p>
                 <p className="text-sm text-zinc-600">Datum: 27.11.2024</p>
               </div>
             </div>

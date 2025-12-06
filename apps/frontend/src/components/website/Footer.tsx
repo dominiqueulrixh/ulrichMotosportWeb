@@ -1,6 +1,7 @@
 import React from 'react';
 import { Phone, Mail, MapPin } from 'lucide-react';
-import logoImage from 'figma:asset/LogoColored.png';
+import logoLight from '../../assets/LogoUlrichMotosportLight.png';
+import logoDark from '../../assets/LogoUlrichMotosportDark.png';
 import { TabKey } from '../../types/navigation';
 
 interface FooterProps {
@@ -53,7 +54,8 @@ export function Footer({ onNavigate, content }: FooterProps) {
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           {/* Company Info */}
           <div>
-            <img src={logoImage} alt="Ulrich Motosport" className="h-12 object-contain mb-6" />
+            <img src={logoLight} alt="Ulrich Motosport" className="h-12 object-contain mb-6 dark:hidden" />
+            <img src={logoDark} alt="Ulrich Motosport" className="h-12 object-contain mb-6 hidden dark:block" />
             {content.description && (
               <p className="text-zinc-400 text-sm mb-4">
                 {content.description}

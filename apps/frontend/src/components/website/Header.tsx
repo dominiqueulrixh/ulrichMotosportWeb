@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, X, Sun, Moon, Phone, Mail } from 'lucide-react';
-import logoImage from 'figma:asset/LogoColored.png';
+import logoLight from '../../assets/LogoUlrichMotosportLight.png';
+import logoDark from '../../assets/LogoUlrichMotosportDark.png';
 import { TabKey } from '../../types/navigation';
 
 interface HeaderProps {
@@ -85,7 +86,8 @@ export function Header({
             onClick={() => onTabChange('home')}
             className="flex items-center"
           >
-            <img src={logoImage} alt="Ulrich Motosport" className="h-12 md:h-16 object-contain" />
+            <img src={logoLight} alt="Ulrich Motosport" className="h-12 md:h-16 object-contain dark:hidden" />
+            <img src={logoDark} alt="Ulrich Motosport" className="h-12 md:h-16 object-contain hidden dark:block" />
           </button>
 
           {/* Desktop Navigation - improved spacing and touch targets */}

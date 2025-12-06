@@ -1,5 +1,13 @@
 import React from 'react';
-import logoImage from 'figma:asset/LogoColored.png';
+import logoLight from '../assets/LogoUlrichMotosportLight.png';
+import logoDark from '../assets/LogoUlrichMotosportDark.png';
+
+const Logo = ({ className = '' }: { className?: string }) => (
+  <>
+    <img src={logoLight} alt="Ulrich Motosport" className={`dark:hidden ${className}`} />
+    <img src={logoDark} alt="Ulrich Motosport" className={`hidden dark:block ${className}`} />
+  </>
+);
 
 export function Uniform() {
   return (
@@ -26,7 +34,7 @@ export function Uniform() {
                 
                 {/* Logo on chest */}
                 <div className="flex justify-center mb-8">
-                  <img src={logoImage} alt="Ulrich Motosport" className="h-12 object-contain" />
+                  <Logo className="h-12 object-contain" />
                 </div>
 
                 {/* Name tag area */}
@@ -54,7 +62,7 @@ export function Uniform() {
                 
                 {/* Logo on chest */}
                 <div className="flex justify-center mb-8 bg-white p-4 rounded">
-                  <img src={logoImage} alt="Ulrich Motosport" className="h-12 object-contain" />
+                  <Logo className="h-12 object-contain" />
                 </div>
 
                 {/* Name tag area */}
@@ -87,7 +95,7 @@ export function Uniform() {
                 
                 {/* Logo on chest */}
                 <div className="flex justify-center mt-8 mb-8">
-                  <img src={logoImage} alt="Ulrich Motosport" className="h-16 object-contain" />
+                  <Logo className="h-16 object-contain" />
                 </div>
 
                 {/* Back logo indication */}

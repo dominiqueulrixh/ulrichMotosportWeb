@@ -2566,3 +2566,12 @@ html {
     transparent var(--grid-fade-end-stop)
   );
 }
+
+/* Display helpers for theme-based logo swapping */
+.dark .dark\:hidden {
+  display: none !important;
+}
+
+.dark .dark\:block {
+  display: block !important;
+}

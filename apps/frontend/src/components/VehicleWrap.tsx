@@ -1,5 +1,13 @@
 import React from 'react';
-import logoImage from 'figma:asset/LogoColored.png';
+import logoLight from '../assets/LogoUlrichMotosportLight.png';
+import logoDark from '../assets/LogoUlrichMotosportDark.png';
+
+const Logo = ({ className = '' }: { className?: string }) => (
+  <>
+    <img src={logoLight} alt="Ulrich Motosport" className={`dark:hidden ${className}`} />
+    <img src={logoDark} alt="Ulrich Motosport" className={`hidden dark:block ${className}`} />
+  </>
+);
 
 export function VehicleWrap() {
   return (
@@ -31,7 +39,7 @@ export function VehicleWrap() {
 
                 {/* Logo */}
                 <div className="absolute top-8 left-8">
-                  <img src={logoImage} alt="Ulrich Motosport" className="h-16 object-contain" />
+                  <Logo className="h-16 object-contain" />
                 </div>
 
                 {/* Diagonal stripes */}
@@ -71,7 +79,7 @@ export function VehicleWrap() {
               
               {/* Logo on door */}
               <div className="absolute left-12 top-1/2 transform -translate-y-1/2">
-                <img src={logoImage} alt="Ulrich Motosport" className="h-12 object-contain" />
+                <Logo className="h-12 object-contain" />
               </div>
 
               {/* Contact info on side */}
@@ -99,7 +107,7 @@ export function VehicleWrap() {
         <div className="bg-zinc-800 p-8 rounded-lg">
           <div className="max-w-2xl mx-auto">
             <div className="bg-gradient-to-b from-zinc-700 to-zinc-900 rounded-lg p-12 text-center">
-              <img src={logoImage} alt="Ulrich Motosport" className="h-20 object-contain mx-auto mb-6" />
+              <Logo className="h-20 object-contain mx-auto mb-6" />
               <div className="space-y-2 text-white">
                 <p className="text-2xl text-yellow-400">www.ulrich-motosport.ch</p>
                 <p>+41 XX XXX XX XX</p>

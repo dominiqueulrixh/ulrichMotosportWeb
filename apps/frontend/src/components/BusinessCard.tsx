@@ -1,6 +1,14 @@
 import React from 'react';
-import logoImage from 'figma:asset/LogoColored.png';
 import { Phone, Mail, MapPin } from 'lucide-react';
+import logoLight from '../assets/LogoUlrichMotosportLight.png';
+import logoDark from '../assets/LogoUlrichMotosportDark.png';
+
+const Logo = ({ className = '' }: { className?: string }) => (
+  <>
+    <img src={logoLight} alt="Ulrich Motosport" className={`dark:hidden ${className}`} />
+    <img src={logoDark} alt="Ulrich Motosport" className={`hidden dark:block ${className}`} />
+  </>
+);
 
 export function BusinessCard() {
   return (
@@ -34,7 +42,7 @@ export function BusinessCard() {
                 <div className="absolute top-0 right-0 w-2 h-full bg-yellow-400 transform skew-x-12"></div>
                 
                 <div className="relative h-full flex flex-col justify-between">
-                  <img src={logoImage} alt="Ulrich Motosport" className="h-12 object-contain object-left" />
+                  <Logo className="h-12 object-contain object-left" />
                   
                   <div className="text-yellow-400">
                     <p className="text-xl">Max Mustermann</p>
@@ -86,7 +94,7 @@ export function BusinessCard() {
                 <div className="absolute top-0 right-0 w-20 h-20 bg-yellow-400 rounded-bl-full opacity-20"></div>
                 
                 <div className="relative h-full flex flex-col justify-between">
-                  <img src={logoImage} alt="Ulrich Motosport" className="h-10 object-contain object-left" />
+                  <Logo className="h-10 object-contain object-left" />
                   
                   <div>
                     <p className="text-white text-lg">Max Mustermann</p>

@@ -1,6 +1,14 @@
 import React from 'react';
-import logoImage from 'figma:asset/LogoColored.png';
 import { Instagram, Facebook, Youtube } from 'lucide-react';
+import logoLight from '../assets/LogoUlrichMotosportLight.png';
+import logoDark from '../assets/LogoUlrichMotosportDark.png';
+
+const Logo = ({ className = '' }: { className?: string }) => (
+  <>
+    <img src={logoLight} alt="Ulrich Motosport" className={`dark:hidden ${className}`} />
+    <img src={logoDark} alt="Ulrich Motosport" className={`hidden dark:block ${className}`} />
+  </>
+);
 
 export function SocialMedia() {
   return (
@@ -34,7 +42,7 @@ export function SocialMedia() {
 
               {/* Content */}
               <div className="relative h-full p-6 flex flex-col justify-between">
-                <img src={logoImage} alt="Ulrich Motosport" className="h-8 object-contain object-left" />
+                <Logo className="h-8 object-contain object-left" />
                 
                 <div>
                   <h4 className="text-yellow-400 text-xl mb-2">Service-Aktion</h4>
@@ -66,7 +74,7 @@ export function SocialMedia() {
 
               {/* Logo at bottom */}
               <div className="absolute bottom-4 left-4">
-                <img src={logoImage} alt="Ulrich Motosport" className="h-6 object-contain" />
+                <Logo className="h-6 object-contain" />
               </div>
             </div>
           </div>
@@ -91,7 +99,7 @@ export function SocialMedia() {
                 </div>
 
                 <div>
-                  <img src={logoImage} alt="Ulrich Motosport" className="h-8 object-contain bg-black px-2 py-1 rounded" />
+                  <Logo className="h-8 object-contain bg-black px-2 py-1 rounded" />
                 </div>
               </div>
             </div>
@@ -108,7 +116,7 @@ export function SocialMedia() {
             <div className="aspect-[9/16] max-w-xs mx-auto bg-black rounded-2xl overflow-hidden relative">
               {/* Top bar area */}
               <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/50 to-transparent">
-                <img src={logoImage} alt="Ulrich Motosport" className="h-6 object-contain" />
+                <Logo className="h-6 object-contain" />
               </div>
 
               {/* Main content area */}
@@ -175,13 +183,13 @@ export function SocialMedia() {
               <div className="absolute top-0 bottom-0 w-4 bg-yellow-400 transform -skew-x-12 left-24"></div>
             </div>
 
-            {/* Content */}
-            <div className="relative h-full flex items-center justify-between px-12">
-              <div>
-                <img src={logoImage} alt="Ulrich Motosport" className="h-20 object-contain mb-4" />
-                <p className="text-white text-xl">Ihr Motorrad-Spezialist seit 20XX</p>
-                <p className="text-yellow-400">Service • Reparatur • Tuning • Teile</p>
-              </div>
+              {/* Content */}
+              <div className="relative h-full flex items-center justify-between px-12">
+                <div>
+                  <Logo className="h-20 object-contain mb-4" />
+                  <p className="text-white text-xl">Ihr Motorrad-Spezialist seit 20XX</p>
+                  <p className="text-yellow-400">Service • Reparatur • Tuning • Teile</p>
+                </div>
 
               <div className="text-right text-white">
                 <p className="text-2xl text-yellow-400 mb-2">+41 XX XXX XX XX</p>
@@ -199,7 +207,7 @@ export function SocialMedia() {
         <div className="bg-zinc-800 p-6 rounded-lg">
           <div className="bg-white p-6 rounded-lg max-w-2xl">
             <div className="flex gap-6 items-start">
-              <img src={logoImage} alt="Ulrich Motosport" className="h-16 object-contain" />
+              <Logo className="h-16 object-contain" />
               <div className="flex-1">
                 <p className="text-black text-sm">Mit freundlichen Grüssen</p>
                 <p className="text-black mt-2">Max Mustermann</p>
