@@ -26,6 +26,10 @@ const footerLinks: { label: string; tab: TabKey }[] = [
 ];
 
 export function Footer({ onNavigate, content }: FooterProps) {
+  const addressLines = content.addressLines?.length
+    ? content.addressLines
+    : ['Neuhofstrasse 1', '8630 Rüti ZH'];
+
   return (
     <footer className="bg-zinc-900 text-white relative overflow-hidden">
       {/* Yellow top border */}
@@ -54,8 +58,8 @@ export function Footer({ onNavigate, content }: FooterProps) {
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           {/* Company Info */}
           <div>
-            <img src={logoLight} alt="Ulrich Motosport" className="h-12 object-contain mb-6 dark:hidden" />
-            <img src={logoDark} alt="Ulrich Motosport" className="h-12 object-contain mb-6 hidden dark:block" />
+            <img src={logoLight} alt="Ulrich Motosport" className="h-16 md:h-20 object-contain mb-6 dark:hidden" />
+            <img src={logoDark} alt="Ulrich Motosport" className="h-16 md:h-20 object-contain mb-6 hidden dark:block" />
             {content.description && (
               <p className="text-zinc-400 text-sm mb-4">
                 {content.description}
@@ -98,10 +102,10 @@ export function Footer({ onNavigate, content }: FooterProps) {
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
                 <span className="text-zinc-400 leading-relaxed">
-                  {content.addressLines.map((line, index) => (
+                  {addressLines.map((line, index) => (
                     <React.Fragment key={`${line}-${index}`}>
                       {line}
-                      {index < content.addressLines.length - 1 && <br />}
+                      {index < addressLines.length - 1 && <br />}
                     </React.Fragment>
                   ))}
                 </span>
