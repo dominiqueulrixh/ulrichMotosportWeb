@@ -26,8 +26,6 @@ export function Contact({ content }: ContactProps) {
 
   return (
     <section id="contact" className="py-24 bg-white dark:bg-zinc-900 relative overflow-hidden">
-      <div className="absolute left-0 top-1/3 w-32 h-px bg-yellow-400 opacity-20"></div>
-      <div className="absolute right-0 bottom-1/3 w-48 h-px bg-yellow-400 opacity-20"></div>
 
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         <div className="text-center mb-16 space-y-4">
