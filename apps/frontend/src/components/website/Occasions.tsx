@@ -22,7 +22,7 @@ export function Occasions({ isDarkMode }: OccasionsProps) {
   }, [isDarkMode]);
 
   return (
-    <section id="occasions" className="py-24 bg-white dark:bg-zinc-900 relative overflow-hidden">
+    <section id="occasions" className="py-24 bg-zinc-50 dark:bg-zinc-900 relative overflow-hidden">
 
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         {/* Section Header */}

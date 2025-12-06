@@ -14,12 +14,22 @@ import { fetchHomepageContent } from './lib/api';
 import type { HomepageContent } from './types/homepage';
 import { LoadingOverlay } from './components/website/LoadingOverlay';
 
+const validTabs: TabKey[] = ['home', 'services', 'brands', 'occasions', 'about', 'contact', 'legal'];
+
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [activeTab, setActiveTab] = useState<TabKey>('home');
   const [homepage, setHomepage] = useState<HomepageContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Restore last visited tab for the current session (falls back to home if invalid).
+  useEffect(() => {
+    const stored = sessionStorage.getItem('activeTab');
+    if (stored && validTabs.includes(stored as TabKey)) {
+      setActiveTab(stored as TabKey);
+    }
+  }, []);
 
   useEffect(() => {
     fetchHomepageContent()
@@ -46,6 +56,8 @@ export default function App() {
   };
 
   const handleTabChange = (tab: TabKey) => {
+    if (!validTabs.includes(tab)) return;
+    sessionStorage.setItem('activeTab', tab);
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -87,7 +99,7 @@ export default function App() {
 
   return (
     <div className={isDarkMode ? 'dark' : ''}>
-      <div className="min-h-screen bg-white dark:bg-zinc-900 transition-colors duration-300">
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 transition-colors duration-300">
         <Header
           isDarkMode={isDarkMode}
           setIsDarkMode={setIsDarkMode}

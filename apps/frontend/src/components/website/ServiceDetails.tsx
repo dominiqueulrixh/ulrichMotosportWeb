@@ -15,7 +15,7 @@ export function ServiceDetails({ onNavigateToContact, content }: ServiceDetailsP
   const categories = content.categories ?? [];
 
   return (
-    <section className="py-24 bg-white dark:bg-zinc-900">
+    <section className="py-24 bg-zinc-50 dark:bg-zinc-900">
       <div className="max-w-7xl mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-16">

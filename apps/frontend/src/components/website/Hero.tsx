@@ -84,7 +84,7 @@ export function Hero({ onNavigate, content }: HeroProps) {
   };
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center bg-white dark:bg-zinc-900 overflow-hidden pt-16 pb-20">
+    <section id="home" className="relative min-h-screen flex items-center bg-zinc-50 dark:bg-zinc-900 overflow-hidden pt-16 pb-20">
       {/* Subtle checkered pattern - top right with gradient fade */}
       <div
         className="absolute right-0 top-0 md:top-4 lg:top-6 grid-fade pointer-events-none"
@@ -217,10 +217,10 @@ export function Hero({ onNavigate, content }: HeroProps) {
                             key={idx}
                             type="button"
                             onClick={() => goTo(idx)}
-                            className={`w-3 h-3 rounded-full border border-white/70 transition-all pointer-events-auto ${
+                            className={`rounded-full border border-white/70 transition-all pointer-events-auto ${
                               idx === activeIndex
-                                ? 'bg-yellow-400 border-yellow-400 scale-125'
-                                : 'bg-white/90'
+                                ? 'w-3 h-3 bg-yellow-400 border-yellow-400 scale-125'
+                                : 'w-3 h-3 bg-black scale-90'
                             }`}
                             aria-label={`Bild ${idx + 1} anzeigen`}
                           />

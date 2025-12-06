@@ -64,7 +64,7 @@ export function Services({ content }: ServicesProps) {
   }, [content.items]);
 
   return (
-    <section id="services" className="py-16 bg-white dark:bg-zinc-900 relative overflow-hidden">
+    <section id="services" className="py-16 bg-zinc-50 dark:bg-zinc-900 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         <div className="text-center mb-12 space-y-4">
           {content.eyebrow && (

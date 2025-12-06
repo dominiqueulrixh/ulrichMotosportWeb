@@ -25,7 +25,7 @@ export function Contact({ content }: ContactProps) {
   const cards = content.cards ?? [];
 
   return (
-    <section id="contact" className="py-24 bg-white dark:bg-zinc-900 relative overflow-hidden">
+    <section id="contact" className="py-24 bg-zinc-50 dark:bg-zinc-900 relative overflow-hidden">
 
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         <div className="text-center mb-16 space-y-4">
@@ -48,7 +48,7 @@ export function Contact({ content }: ContactProps) {
           )}
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {cards.map(card => {
             const Icon = iconByType[card.type];
             const isLink = card.type === 'phone' || card.type === 'email';
