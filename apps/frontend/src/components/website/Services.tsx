@@ -26,6 +26,7 @@ export function Services({ content }: ServicesProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const boostRef = useRef(0);
   const lastTouchXRef = useRef<number | null>(null);
+  const lastTouchTimeRef = useRef<number | null>(null);
   const items = content.items ?? [];
   const repeatCount = Math.max(6, Math.ceil((items.length ? 12 / items.length : 12)));
   const loopItems = Array.from({ length: repeatCount }, () => items).flat();
@@ -52,7 +53,7 @@ export function Services({ content }: ServicesProps) {
 
       // Smoothly decay any swipe boost so the carousel eases back to base speed.
       if (boostRef.current > 0) {
-        boostRef.current = Math.max(0, boostRef.current - 0.03);
+        boostRef.current = Math.max(0, boostRef.current - 0.04);
       }
     };
 
@@ -95,16 +96,21 @@ export function Services({ content }: ServicesProps) {
           onTouchStart={event => {
             const touch = event.touches[0];
             lastTouchXRef.current = touch.clientX;
+            lastTouchTimeRef.current = event.timeStamp;
           }}
           onTouchMove={event => {
             const touch = event.touches[0];
             const lastX = lastTouchXRef.current;
-            if (lastX !== null) {
+            const lastTime = lastTouchTimeRef.current;
+            if (lastX !== null && lastTime !== null) {
               const delta = Math.abs(touch.clientX - lastX);
-              // Increase speed boost based on swipe distance, capped to avoid runaway speed.
-              boostRef.current = Math.min(3, boostRef.current + delta / 40);
+              const timeDelta = Math.max(1, event.timeStamp - lastTime); // ms
+              const velocity = delta / timeDelta; // px per ms
+              // Boost scales with swipe velocity so quick flicks accelerate noticeably on mobile.
+              boostRef.current = Math.min(6, velocity * 12);
             }
             lastTouchXRef.current = touch.clientX;
+            lastTouchTimeRef.current = event.timeStamp;
           }}
           style={{ scrollBehavior: 'auto' }}
         >
