@@ -1,6 +1,7 @@
 import React from 'react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import type { TeamMember } from '../../types/homepage';
+import backupUser from '../../assets/backupUser.jpeg';
 
 interface TeamProps {
   content: {
@@ -49,7 +50,7 @@ export function Team({ content }: TeamProps) {
               {/* Image */}
               <div className="relative aspect-[3/4] overflow-hidden">
                 <ImageWithFallback
-                  src={member.imageUrl ?? 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80'}
+                  src={member.imageUrl ?? backupUser}
                   alt={member.name}
                   className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
                 />
