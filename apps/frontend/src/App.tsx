@@ -12,6 +12,7 @@ import { Legal } from './components/website/Legal';
 import { TabKey } from './types/navigation';
 import { fetchHomepageContent } from './lib/api';
 import type { HomepageContent } from './types/homepage';
+import { LoadingOverlay } from './components/website/LoadingOverlay';
 
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -96,10 +97,8 @@ export default function App() {
           contactEmail={contactEmail}
           tagline={homepage?.navigation.tagline}
         />
-        <main>
-          {loading && (
-            <div className="py-24 text-center text-zinc-600 dark:text-zinc-300">Lade Inhalte...</div>
-          )}
+        {loading && <LoadingOverlay />}
+        <main className={`transition-all duration-300 ${loading ? 'opacity-0 blur-sm pointer-events-none select-none' : 'opacity-100'}`}>
           {error && (
             <div className="py-24 text-center text-red-500">{error}</div>
           )}
